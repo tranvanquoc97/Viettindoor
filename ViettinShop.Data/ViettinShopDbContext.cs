@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -8,7 +9,7 @@ using ViettinShop.Model.Models;
 
 namespace ViettinShop.Data
 {
-    public class ViettinShopDbContext : DbContext
+    public class ViettinShopDbContext : IdentityDbContext<ApplicationUser>
     {
         public ViettinShopDbContext() : base("ViettinShopConnection")
         {
@@ -35,13 +36,17 @@ namespace ViettinShop.Data
         public DbSet<Tag> Tags { set; get; }
 
         public DbSet<VisitorStatistic> VisitorStatistics { set; get; }
-
         public DbSet<Error> Errors { set; get; }
 
+        public static ViettinShopDbContext Create()
+        {
+            return new ViettinShopDbContext();
+        }
 
         protected override void OnModelCreating(DbModelBuilder builder)
         {
-
+            builder.Entity<IdentityUserRole>().HasKey(i => new { i.UserId, i.RoleId });
+            builder.Entity<IdentityUserLogin>().HasKey(i => i.UserId);
         }
     }
 }
